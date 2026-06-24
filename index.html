@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SPICE RACK — your next read, your way</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --noir: #130726; --noir-2: #1A0A30;
+    --velvet-hi: #2E1551; --velvet-lo: #1A0930; --velvet-card-hi: #321858; --velvet-card-lo: #1C0A33;
+    --violet: #8B5CF6; --violet-deep: #5B2A9E; --orchid: #B98AE6; --orchid-dim: #8E6BC4;
+    --rose: #B5568F; --edge: rgba(168,116,232,0.20); --edge-lit: rgba(185,138,230,0.32);
+    --cream: #EFE8F7; --mauve: #BBA6D8; --mauve-dim: #836FA6;
+  }
+  :root { --gold: #C9A24B; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--noir);
+    background-image:
+      radial-gradient(ellipse 75% 50% at 50% -6%, rgba(139,92,246,0.22), transparent 62%),
+      radial-gradient(ellipse 55% 45% at 12% 18%, rgba(91,42,158,0.28), transparent 58%),
+      radial-gradient(ellipse 50% 40% at 92% 30%, rgba(181,86,143,0.12), transparent 60%);
+    background-attachment: fixed; color: var(--cream);
+    font-family: 'Inter', system-ui, sans-serif; font-weight: 400; line-height: 1.55; min-height: 100vh; -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.055;
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='180'%20height='180'%3E%3Cfilter%20id='n'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.8'%20numOctaves='2'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 24px 100px; }
+
+  .surface {
+    background: linear-gradient(158deg, var(--velvet-card-hi), var(--velvet-card-lo));
+    border: 1px solid var(--edge);
+    box-shadow: 0 26px 64px -30px rgba(0,0,0,0.9), 0 3px 8px -4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 24px 0 16px; gap: 14px; flex-wrap: wrap; border-bottom: 1px solid var(--edge); margin-bottom: 10px; }
+  .brand { font-family: 'Fraunces', serif; font-weight: 500; font-size: 23px; letter-spacing: 0.01em; cursor: pointer; background: none; border: none; color: var(--cream); }
+  .brand .it { font-style: italic; font-weight: 400; color: var(--orchid); }
+  .navlinks { display: flex; gap: 2px; flex-wrap: wrap; }
+  .navlink { background: none; border: none; cursor: pointer; color: var(--mauve); font-family: 'Inter', sans-serif; font-size: 12.5px; letter-spacing: 0.04em; padding: 8px 12px; border-radius: 8px; transition: color .18s ease; }
+  .navlink:hover { color: var(--cream); }
+  .navlink.active { color: var(--orchid); }
+  .navlink.author { color: var(--mauve); border: 1px solid var(--edge); border-radius: 999px; padding: 7px 15px; margin-left: 4px; }
+  .navlink.author:hover { color: var(--orchid); border-color: var(--edge-lit); }
+
+  .acctbar { display: inline-flex; align-items: center; gap: 10px; margin-left: 6px; }
+  .acct-hi { font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; color: var(--orchid); font-size: 14.5px; }
+  .acct-btn { cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12.5px; letter-spacing: 0.04em; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--edge-lit); background: transparent; color: var(--mauve); transition: all .16s ease; }
+  .acct-btn:hover { color: var(--cream); }
+  .acct-btn.primary { background: linear-gradient(180deg, var(--violet), var(--violet-deep)); color: #fff; border-color: var(--orchid); box-shadow: 0 6px 16px -8px rgba(139,92,246,0.7), inset 0 1px 0 rgba(255,255,255,0.25); }
+
+  input[type=password] { width: 100%; background: rgba(10,5,20,0.55); color: var(--cream); border: 1px solid var(--edge); border-radius: 10px; padding: 14px 15px; font-family: 'Inter', sans-serif; font-size: 15px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.4); }
+  input[type=password]:focus { outline: none; border-color: var(--violet); box-shadow: inset 0 2px 8px rgba(0,0,0,0.4), 0 0 0 3px rgba(139,92,246,0.2); }
+  .modal { display: none; position: fixed; inset: 0; z-index: 50; background: rgba(8,4,16,0.78); backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 22px; }
+  .modal.show { display: flex; animation: fade .3s ease; }
+  .modal-card { width: 100%; max-width: 420px; border-radius: 18px; padding: 30px; position: relative; }
+  .modal-x { position: absolute; top: 14px; right: 16px; background: none; border: none; color: var(--mauve-dim); font-size: 24px; line-height: 1; cursor: pointer; }
+  .modal-x:hover { color: var(--cream); }
+  .auth-tabs { display: flex; gap: 4px; background: rgba(10,5,20,0.5); border: 1px solid var(--edge); border-radius: 10px; padding: 4px; margin-bottom: 22px; }
+  .auth-tab { flex: 1; background: none; border: none; cursor: pointer; color: var(--mauve); font-family: 'Inter', sans-serif; font-size: 13px; padding: 9px; border-radius: 7px; transition: all .15s ease; }
+  .auth-tab.on { background: linear-gradient(180deg, var(--violet), var(--violet-deep)); color: #fff; }
+  .auth-title { font-family: 'Fraunces', serif; font-weight: 400; font-size: 26px; margin-bottom: 18px; }
+  .auth-field { margin-bottom: 16px; }
+  .auth-fine { font-size: 11.5px; color: var(--mauve-dim); margin-top: 14px; line-height: 1.5; }
+
+  .view { display: none; }
+  .view.show { display: block; animation: fade .45s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .hero { text-align: center; padding: 54px 0 30px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--orchid); margin-bottom: 22px; font-weight: 500; }
+  h1 { font-family: 'Fraunces', serif; font-weight: 400; font-size: clamp(44px, 9vw, 78px); line-height: 0.98; letter-spacing: -0.015em; text-shadow: 0 2px 30px rgba(139,92,246,0.25); }
+  h1 .it { font-style: italic; color: var(--orchid); }
+  .tag { font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; color: var(--mauve); font-size: clamp(17px, 3.6vw, 21px); margin-top: 20px; }
+  .h2 { font-family: 'Fraunces', serif; font-size: clamp(30px,5.5vw,42px); font-weight: 400; line-height: 1; letter-spacing: -0.01em; }
+  .h2 .it { font-style: italic; color: var(--orchid); }
+  .sub { color: var(--mauve); font-style: italic; font-family: 'Fraunces', serif; font-weight: 300; margin-top: 12px; font-size: 18px; }
+  .rule { width: 50px; height: 2px; background: linear-gradient(90deg, transparent, var(--orchid), transparent); margin: 26px auto 0; }
+  .section-label { font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; color: var(--cream); font-size: 22px; margin: 36px 0 14px; }
+
+  /* home tiles */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 16px; margin-top: 18px; }
+  .tile { text-align: left; cursor: pointer; color: var(--cream); border-radius: 16px; padding: 28px 24px; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; text-decoration: none; display: block; }
+  .tile:hover { transform: translateY(-4px); border-color: var(--edge-lit); box-shadow: 0 34px 70px -30px rgba(0,0,0,0.95), 0 0 38px -16px rgba(139,92,246,0.5), inset 0 1px 0 rgba(255,255,255,0.1); }
+  .t-num { font-family: 'Fraunces', serif; font-size: 13px; letter-spacing: 0.22em; color: var(--orchid-dim); display: block; }
+  .t-name { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 400; margin-top: 16px; letter-spacing: -0.01em; }
+  .tile:hover .t-name { color: var(--orchid); }
+  .t-desc { color: var(--mauve); font-size: 14px; margin-top: 9px; line-height: 1.5; font-weight: 300; }
+  .tile.author { border-style: dashed; }
+  .tile.author .t-name { color: var(--orchid); }
+
+  /* browse tiles */
+  .cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px,1fr)); gap: 15px; }
+  .cat { text-align: left; cursor: pointer; color: var(--cream); border-radius: 14px; padding: 22px 20px; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+  .cat:hover { transform: translateY(-3px); border-color: var(--edge-lit); box-shadow: 0 30px 60px -28px rgba(0,0,0,0.9), 0 0 30px -14px rgba(139,92,246,0.45), inset 0 1px 0 rgba(255,255,255,0.1); }
+  .cat-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 400; line-height: 1.12; }
+  .cat-desc { color: var(--mauve); font-size: 13px; margin-top: 7px; font-style: italic; font-family: 'Fraunces', serif; font-weight: 300; }
+
+  .console { border-radius: 18px; padding: 30px; margin-top: 18px; }
+  label.field-label { display: block; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--orchid); margin-bottom: 12px; font-weight: 500; }
+  textarea { width: 100%; min-height: 96px; resize: vertical; background: rgba(10,5,20,0.55); color: var(--cream); border: 1px solid var(--edge); border-radius: 11px; padding: 16px 17px; font-family: 'Fraunces', serif; font-weight: 300; font-size: 19px; line-height: 1.5; box-shadow: inset 0 2px 8px rgba(0,0,0,0.4); }
+  textarea::placeholder { color: var(--mauve-dim); font-style: italic; }
+  textarea:focus, input[type=text]:focus { outline: none; border-color: var(--violet); box-shadow: inset 0 2px 8px rgba(0,0,0,0.4), 0 0 0 3px rgba(139,92,246,0.22); }
+  input[type=text] { width: 100%; background: rgba(10,5,20,0.55); color: var(--cream); border: 1px solid var(--edge); border-radius: 10px; padding: 14px 15px; font-family: 'Inter', sans-serif; font-size: 15px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.4); }
+  input[type=text]::placeholder { color: var(--mauve-dim); }
+  .grid2 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  @media (max-width:560px){ .grid2 { grid-template-columns: 1fr; } }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 14px; }
+  .chip { font-size: 13px; color: var(--mauve); cursor: pointer; background: rgba(168,116,232,0.06); border: 1px solid var(--edge); border-radius: 999px; padding: 7px 14px; transition: all .18s ease; font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; }
+  .chip:hover { color: var(--orchid); border-color: var(--edge-lit); }
+
+  .pillgroup { margin-bottom: 24px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+  .pill { font-size: 13.5px; cursor: pointer; user-select: none; color: var(--mauve); background: rgba(168,116,232,0.05); border: 1px solid var(--edge); border-radius: 999px; padding: 9px 15px; transition: all .18s ease; }
+  .pill:hover { color: var(--cream); border-color: var(--edge-lit); transform: translateY(-1px); }
+  .pill[aria-pressed="true"] { background: linear-gradient(180deg, var(--violet), var(--violet-deep)); border-color: var(--orchid); color: #fff; box-shadow: 0 6px 16px -8px rgba(139,92,246,0.7), inset 0 1px 0 rgba(255,255,255,0.25); }
+  .addrow { display: flex; gap: 9px; margin-top: 12px; }
+  .add-input { flex: 1; background: rgba(10,5,20,0.55); color: var(--cream); border: 1px solid var(--edge); border-radius: 999px; padding: 8px 15px; font-family: 'Inter', sans-serif; font-size: 13.5px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.4); }
+  .add-input::placeholder { color: var(--mauve-dim); }
+  .add-input:focus { outline: none; border-color: var(--violet); box-shadow: inset 0 2px 8px rgba(0,0,0,0.4), 0 0 0 3px rgba(139,92,246,0.2); }
+  .add-btn { cursor: pointer; background: rgba(139,92,246,0.16); border: 1px solid var(--edge-lit); color: var(--orchid); border-radius: 999px; padding: 8px 16px; font-size: 12.5px; letter-spacing: 0.04em; transition: all .16s ease; }
+  .add-btn:hover { background: rgba(139,92,246,0.28); color: var(--cream); }
+
+  .row { display: flex; gap: 26px; margin-top: 10px; flex-wrap: wrap; }
+  .col { flex: 1; min-width: 240px; }
+  .spice-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .spice-val { font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; color: var(--orchid); font-size: 15px; }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; margin-top: 18px; border-radius: 99px; background: linear-gradient(90deg, var(--violet), var(--rose)); outline: none; box-shadow: 0 0 12px -2px rgba(139,92,246,0.5); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, var(--orchid)); border: 2px solid var(--violet-deep); cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.6); }
+  input[type=range]::-moz-range-thumb { height: 18px; width: 18px; border-radius: 50%; background: var(--orchid); border: 2px solid var(--violet-deep); cursor: pointer; }
+
+  .toggles { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+  .toggle { font-size: 12.5px; cursor: pointer; user-select: none; background: rgba(168,116,232,0.05); border: 1px solid var(--edge); border-radius: 8px; padding: 8px 13px; color: var(--mauve); transition: all .18s ease; }
+  .toggle[aria-pressed="true"] { background: linear-gradient(180deg, rgba(139,92,246,0.35), rgba(91,42,158,0.35)); border-color: var(--orchid); color: var(--cream); box-shadow: inset 0 1px 0 rgba(255,255,255,0.15); }
+
+  .go { width: 100%; margin-top: 26px; cursor: pointer; background: linear-gradient(180deg, var(--violet), var(--violet-deep)); color: #fff; border: 1px solid rgba(185,138,230,0.5); border-radius: 12px; padding: 17px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13.5px; letter-spacing: 0.16em; text-transform: uppercase; box-shadow: 0 14px 32px -12px rgba(139,92,246,0.65), inset 0 1px 0 rgba(255,255,255,0.28); transition: all .2s ease; }
+  .go:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: 0 20px 42px -14px rgba(139,92,246,0.8), inset 0 1px 0 rgba(255,255,255,0.32); }
+  .go:disabled { opacity: .55; cursor: wait; transform: none; filter: none; }
+  .go.ghost { background: transparent; color: var(--orchid); box-shadow: none; border-color: var(--edge-lit); }
+  .go.ghost:hover { background: rgba(139,92,246,0.1); filter: none; }
+
+  .results-head { font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; font-size: 24px; margin: 44px 0 4px; }
+  .results-head .pin { font-style: normal; color: var(--orchid); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; display: block; margin-bottom: 8px; font-family: 'Inter', sans-serif; font-weight: 500; }
+  .status { text-align: center; color: var(--mauve); font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; margin-top: 36px; font-size: 19px; }
+  .leadin { font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; color: var(--mauve); font-size: 17px; margin-top: 34px; }
+  .results { margin-top: 18px; display: flex; flex-direction: column; gap: 18px; }
+
+  .book { border-radius: 16px; padding: 26px 28px; opacity: 0; transform: translateY(12px); animation: rise .55s ease forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+  .book-top { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+  .book-title { font-family: 'Fraunces', serif; font-size: 25px; line-height: 1.12; font-weight: 400; }
+  .book-meta { color: var(--mauve); font-size: 14px; margin-top: 5px; font-style: italic; font-family: 'Fraunces', serif; font-weight: 300; }
+  .book-meta .yr { color: var(--mauve-dim); }
+  .heat { display: flex; gap: 3px; flex-shrink: 0; align-items: center; padding-top: 6px; }
+  .flame { width: 5px; height: 17px; border-radius: 2px; background: rgba(241,233,247,0.08); }
+  .flame.lit { background: linear-gradient(180deg, var(--orchid), var(--rose)); box-shadow: 0 0 8px rgba(181,86,143,0.55); }
+  .why { font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; font-size: 17px; color: var(--cream); margin-top: 14px; line-height: 1.5; }
+  .conf { display: inline-block; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; border-radius: 999px; padding: 4px 11px; margin-top: 12px; font-weight: 500; }
+  .conf.high { color: var(--orchid); border: 1px solid var(--edge-lit); }
+  .conf.medium { color: var(--mauve); border: 1px solid var(--edge); }
+  .conf.low { color: var(--mauve-dim); border: 1px solid var(--edge); }
+  .tropes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+  .trope { font-size: 11px; letter-spacing: 0.06em; text-transform: lowercase; color: var(--orchid); border: 1px solid var(--edge); border-radius: 999px; padding: 5px 12px; background: rgba(168,116,232,0.06); }
+
+  .series { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--edge); }
+  .sbadges { display: flex; flex-wrap: wrap; gap: 9px; }
+  .sbadge { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; font-weight: 600; border-radius: 7px; padding: 6px 12px; }
+  .sbadge.ok { color: #fff; background: linear-gradient(180deg, var(--violet), var(--violet-deep)); box-shadow: inset 0 1px 0 rgba(255,255,255,0.2); }
+  .sbadge.warn { color: #fff; background: linear-gradient(180deg, var(--rose), #7d2f5e); box-shadow: inset 0 1px 0 rgba(255,255,255,0.18); }
+  .sbadge.neutral { color: var(--mauve); border: 1px solid var(--edge); }
+  .verdict { font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; font-size: 16px; color: var(--cream); margin-top: 13px; line-height: 1.5; }
+  .order { margin-top: 14px; }
+  .order-h { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orchid); margin-bottom: 10px; font-weight: 500; }
+  .order ol { list-style: none; counter-reset: bk; }
+  .order li { counter-increment: bk; position: relative; padding: 6px 0 6px 32px; color: var(--mauve); font-size: 14.5px; }
+  .order li::before { content: counter(bk,decimal-leading-zero); position: absolute; left: 0; top: 6px; font-family: 'Fraunces', serif; font-size: 12px; color: var(--orchid-dim); letter-spacing: 0.05em; }
+  .order li.cur { color: var(--cream); }
+  .order li.cur::before { color: var(--orchid); }
+  .snote { font-size: 13px; color: var(--mauve-dim); margin-top: 12px; line-height: 1.55; }
+
+  .links { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px; }
+  .lnk { font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mauve); text-decoration: none; border: 1px solid var(--edge); border-radius: 8px; padding: 9px 14px; transition: all .18s ease; font-weight: 500; background: rgba(168,116,232,0.05); }
+  .lnk:hover { border-color: var(--edge-lit); color: var(--cream); }
+  .lnk.primary { color: var(--orchid); border-color: var(--edge-lit); }
+  .lnk.primary:hover { background: rgba(139,92,246,0.14); }
+
+  /* ratings */
+  .rating { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--edge); }
+  .rlabel { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orchid); font-weight: 500; }
+  .rx-row { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 11px; }
+  .rx { cursor: pointer; font-size: 12.5px; color: var(--mauve); background: rgba(168,116,232,0.05); border: 1px solid var(--edge); border-radius: 999px; padding: 8px 15px; transition: all .18s ease; font-family: 'Inter', sans-serif; }
+  .rx:hover { color: var(--cream); border-color: var(--edge-lit); }
+  .rx.on.love { background: linear-gradient(180deg, var(--violet), var(--violet-deep)); border-color: var(--orchid); color: #fff; box-shadow: 0 6px 16px -8px rgba(139,92,246,0.7), inset 0 1px 0 rgba(255,255,255,0.25); }
+  .rx.on.fine { background: rgba(168,116,232,0.16); border-color: var(--edge-lit); color: var(--cream); }
+  .rx.on.nope { background: linear-gradient(180deg, var(--rose), #7d2f5e); border-color: var(--rose); color: #fff; }
+  .rz-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 13px; align-items: center; animation: fade .3s ease; }
+  .rztip { font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; color: var(--mauve); font-size: 14px; margin-right: 2px; }
+  .rz { cursor: pointer; font-size: 11.5px; color: var(--mauve); background: transparent; border: 1px solid var(--edge); border-radius: 999px; padding: 6px 12px; transition: all .16s ease; }
+  .rz:hover { color: var(--cream); border-color: var(--edge-lit); }
+  .rz.on { background: rgba(139,92,246,0.18); border-color: var(--orchid); color: var(--cream); }
+
+  .recap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  @media (max-width:560px){ .recap { grid-template-columns: 1fr; } }
+  .recap-col { border-radius: 14px; padding: 18px 20px; }
+  .recap-h { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px; font-weight: 500; }
+  .recap-h.love { color: var(--orchid); }
+  .recap-h.nope { color: var(--rose); }
+  .recap-item { color: var(--cream); font-size: 14.5px; padding: 6px 0; font-family: 'Fraunces', serif; font-weight: 300; border-bottom: 1px solid var(--edge); }
+  .recap-item:last-child { border-bottom: none; }
+  .recap-item span { color: var(--mauve); font-style: italic; }
+  .recap-empty { color: var(--mauve-dim); font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; font-size: 15px; }
+
+  /* presets */
+  .presets { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .preset { border-radius: 14px; padding: 18px 20px; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+  .preset:hover { transform: translateY(-2px); border-color: var(--edge-lit); box-shadow: 0 24px 50px -26px rgba(0,0,0,0.9), 0 0 26px -14px rgba(139,92,246,0.45); }
+  .preset-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 400; }
+  .preset-sum { color: var(--mauve); font-size: 13px; margin-top: 5px; font-style: italic; font-family: 'Fraunces', serif; font-weight: 300; }
+  .preset-run { font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--orchid); border: 1px solid var(--edge-lit); border-radius: 999px; padding: 7px 13px; white-space: nowrap; }
+  .preset-x { background: none; border: none; color: var(--mauve-dim); cursor: pointer; font-size: 18px; line-height: 1; padding: 4px 6px; }
+  .preset-x:hover { color: var(--rose); }
+  .empty { color: var(--mauve-dim); font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; font-size: 17px; padding: 18px 0; }
+  .msg { font-family: 'Fraunces', serif; font-style: italic; font-weight: 300; color: var(--orchid); font-size: 16px; margin-top: 12px; min-height: 20px; }
+
+  .err { background: rgba(181,86,143,0.14); border: 1px solid var(--rose); color: var(--cream); padding: 17px 19px; border-radius: 12px; margin-top: 26px; font-size: 15px; }
+  footer { text-align: center; margin-top: 56px; color: var(--mauve-dim); font-size: 12px; line-height: 1.8; letter-spacing: 0.02em; }
+  footer .legend { color: var(--mauve); }
+  @media (prefers-reduced-motion: reduce) { .book, .view.show { animation: none; opacity: 1; transform: none; } .go:hover, .cat:hover, .tile:hover, .preset:hover, .pill:hover { transform: none; } }
+</style>
+  <script src="/storage-shim.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <nav>
+      <button class="brand" data-go="home">Spice<span class="it">Rack</span></button>
+      <div class="navlinks">
+        <button class="navlink active" data-go="home">Home</button>
+        <button class="navlink" data-go="browse">Browse</button>
+        <button class="navlink" data-go="describe">Describe</button>
+        <button class="navlink" data-go="build">Build</button>
+        <button class="navlink" data-go="name">Name it</button>
+        <button class="navlink" data-go="series">Series</button>
+        <button class="navlink" data-go="you">You</button>
+        <a class="navlink author" href="spice-rack-authors.html">For Authors</a>
+        <span class="acctbar" id="acctBar"></span>
+      </div>
+    </nav>
+
+    <!-- HOME -->
+    <section id="view-home" class="view show">
+      <div class="hero">
+        <div class="eyebrow">Curated for readers who know what they like</div>
+        <h1>Your next read,<br><span class="it">your way</span></h1>
+        <div class="tag">However your mind wanders tonight — choose your door.</div>
+        <div class="rule"></div>
+      </div>
+      <div class="tiles">
+        <button class="tile surface" data-go="describe"><span class="t-num">01</span><div class="t-name">Describe it</div><div class="t-desc">Tell me the feeling you're chasing, in plain words. I'll find the book.</div></button>
+        <button class="tile surface" data-go="build"><span class="t-num">02</span><div class="t-name">Build it</div><div class="t-desc">Can't put it to words? Choose your tropes and I'll compose the match.</div></button>
+        <button class="tile surface" data-go="name"><span class="t-num">03</span><div class="t-name">Name that book</div><div class="t-desc">You half-remember it. I'll work out exactly what it was.</div></button>
+        <button class="tile surface" data-go="series"><span class="t-num">04</span><div class="t-name">Series check</div><div class="t-desc">A standalone, a duet, or a whole series? Know before you begin.</div></button>
+        <button class="tile surface" data-go="browse"><span class="t-num">05</span><div class="t-name">Browse by vibe</div><div class="t-desc">Simply show me what's worth reading in the lane I'm drawn to.</div></button>
+        <button class="tile surface" data-go="you"><span class="t-num">06</span><div class="t-name">Your presets</div><div class="t-desc">Save the cravings you always have — one tap to the good stuff.</div></button>
+        <a class="tile surface author" href="spice-rack-authors.html"><span class="t-num">07</span><div class="t-name">For authors</div><div class="t-desc">Tag your book so the readers chasing those tropes arrive at it.</div></a>
+      </div>
+    </section>
+
+    <!-- BROWSE -->
+    <section id="view-browse" class="view">
+      <div class="hero"><div class="h2">Browse by <span class="it">vibe</span></div><div class="sub">Choose a lane to see what's worth your night.</div></div>
+      <div class="cats" id="catGrid">
+        <button class="cat surface" data-q="feral fated mates romance, primal possessive bond, deeply spicy" data-spice="5"><div class="cat-name">Feral fated mates</div><div class="cat-desc">destiny drives the car</div></button>
+        <button class="cat surface" data-q="monster romance and monster-under-the-bed romance, indie and KU, very spicy" data-spice="5"><div class="cat-name">Monster romance</div><div class="cat-desc">he's not human, she's not mad about it</div></button>
+        <button class="cat surface" data-q="touch-her-and-die possessive protector romance, obsessive hero" data-spice="4"><div class="cat-name">Touch-her-and-die</div><div class="cat-desc">he would burn it all down</div></button>
+        <button class="cat surface" data-q="dark romance, morally grey villain hero, unhinged and intense" data-spice="5"><div class="cat-name">Dark &amp; unhinged</div><div class="cat-desc">morally grey, gloriously</div></button>
+        <button class="cat surface" data-q="grumpy sunshine romance, indie and small-press deep cuts" data-spice="3"><div class="cat-name">Grumpy × sunshine</div><div class="cat-desc">he melts for one person only</div></button>
+        <button class="cat surface" data-q="small-town slow burn romance, cozy with real emotional stakes" data-spice="3"><div class="cat-name">Small-town slow burn</div><div class="cat-desc">the ache before the payoff</div></button>
+        <button class="cat surface" data-q="mafia romance, morally grey, possessive, indie deep cuts" data-spice="4"><div class="cat-name">Mafia &amp; morally grey</div><div class="cat-desc">power, danger, devotion</div></button>
+        <button class="cat surface" data-q="why-choose reverse harem romance, deeply spicy, indie" data-spice="5"><div class="cat-name">Why choose</div><div class="cat-desc">why pick one</div></button>
+        <button class="cat surface" data-q="hockey and sports romance, forced proximity, indie and KU" data-spice="4"><div class="cat-name">Hockey &amp; sports</div><div class="cat-desc">falls the hardest</div></button>
+        <button class="cat surface" data-q="breeding kink romance, indie and KU, deeply spicy" data-spice="5"><div class="cat-name">Breeding kink</div><div class="cat-desc">the niche the group lives in</div></button>
+      </div>
+    </section>
+
+    <!-- DESCRIBE -->
+    <section id="view-describe" class="view">
+      <div class="hero"><div class="h2">Describe the <span class="it">feeling</span></div><div class="sub">The book in your head. I'll find the real one.</div></div>
+      <div class="console surface">
+        <label class="field-label" for="craving">What are you in the mood for?</label>
+        <textarea id="craving" placeholder="grumpy-sunshine, forced proximity, only one bed — and I want it to absolutely wreck me by chapter twelve"></textarea>
+        <div class="chips" id="exampleChips">
+          <span class="chip">touch-her-and-die mountain man</span>
+          <span class="chip">fake dating turns real, low angst</span>
+          <span class="chip">enemies-to-lovers, banter that hurts</span>
+          <span class="chip">fated mates, fully feral</span>
+        </div>
+        <div class="row" style="margin-top:26px">
+          <div class="col">
+            <div class="spice-head"><label class="field-label" for="tSpice" style="margin:0">Spice level</label><span class="spice-val" id="tSpiceVal">3 · open door</span></div>
+            <input type="range" id="tSpice" min="1" max="5" value="3" step="1" />
+          </div>
+          <div class="col">
+            <label class="field-label">Dealbreakers &amp; must-haves</label>
+            <div class="toggles" data-toggles="tell">
+              <span class="toggle" role="button" aria-pressed="false" data-v="guaranteed HEA, no exceptions">guaranteed HEA</span>
+              <span class="toggle" role="button" aria-pressed="false" data-v="absolutely no third-act breakup">no 3rd-act breakup</span>
+              <span class="toggle" role="button" aria-pressed="false" data-v="no cheating of any kind">no cheating</span>
+              <span class="toggle" role="button" aria-pressed="false" data-v="no cliffhanger, complete story">no cliffhanger</span>
+            </div>
+          </div>
+        </div>
+        <button class="go" data-run="describe">Find my next read</button>
+      </div>
+    </section>
+
+    <!-- BUILD -->
+    <section id="view-build" class="view">
+      <div class="hero"><div class="h2">Build the <span class="it">craving</span></div><div class="sub">Choose the ingredients. I'll compose the match.</div></div>
+      <div class="console surface">
+        <div class="pillgroup">
+          <label class="field-label">Tropes</label>
+          <div class="pills" data-pills="trope">
+            <span class="pill" role="button" aria-pressed="false">enemies to lovers</span>
+            <span class="pill" role="button" aria-pressed="false">grumpy × sunshine</span>
+            <span class="pill" role="button" aria-pressed="false">fake dating</span>
+            <span class="pill" role="button" aria-pressed="false">forced proximity</span>
+            <span class="pill" role="button" aria-pressed="false">only one bed</span>
+            <span class="pill" role="button" aria-pressed="false">second chance</span>
+            <span class="pill" role="button" aria-pressed="false">fated mates</span>
+            <span class="pill" role="button" aria-pressed="false">friends to lovers</span>
+            <span class="pill" role="button" aria-pressed="false">marriage of convenience</span>
+            <span class="pill" role="button" aria-pressed="false">arranged marriage</span>
+            <span class="pill" role="button" aria-pressed="false">forbidden love</span>
+            <span class="pill" role="button" aria-pressed="false">age gap</span>
+            <span class="pill" role="button" aria-pressed="false">brother's best friend</span>
+            <span class="pill" role="button" aria-pressed="false">best friend's sibling</span>
+            <span class="pill" role="button" aria-pressed="false">boss × employee</span>
+            <span class="pill" role="button" aria-pressed="false">rivals to lovers</span>
+            <span class="pill" role="button" aria-pressed="false">slow burn</span>
+            <span class="pill" role="button" aria-pressed="false">love triangle</span>
+            <span class="pill" role="button" aria-pressed="false">why choose</span>
+            <span class="pill" role="button" aria-pressed="false">secret baby</span>
+            <span class="pill" role="button" aria-pressed="false">accidental pregnancy</span>
+            <span class="pill" role="button" aria-pressed="false">bodyguard</span>
+            <span class="pill" role="button" aria-pressed="false">single parent</span>
+            <span class="pill" role="button" aria-pressed="false">return to hometown</span>
+            <span class="pill" role="button" aria-pressed="false">secret identity</span>
+            <span class="pill" role="button" aria-pressed="false">breeding kink</span>
+          </div>
+          <div class="addrow"><input type="text" class="add-input" data-addto="trope" placeholder="add your own trope…" /><button class="add-btn" data-addto="trope">Add</button></div>
+        </div>
+        <div class="pillgroup">
+          <label class="field-label">Characters &amp; dynamics</label>
+          <div class="pills" data-pills="char">
+            <span class="pill" role="button" aria-pressed="false">morally grey MMC</span>
+            <span class="pill" role="button" aria-pressed="false">cinnamon roll hero</span>
+            <span class="pill" role="button" aria-pressed="false">possessive / feral</span>
+            <span class="pill" role="button" aria-pressed="false">touch-her-and-die</span>
+            <span class="pill" role="button" aria-pressed="false">golden retriever bf</span>
+            <span class="pill" role="button" aria-pressed="false">sunshine FMC</span>
+            <span class="pill" role="button" aria-pressed="false">sassy FMC</span>
+            <span class="pill" role="button" aria-pressed="false">bratty FMC</span>
+            <span class="pill" role="button" aria-pressed="false">single dad</span>
+            <span class="pill" role="button" aria-pressed="false">virgin heroine</span>
+            <span class="pill" role="button" aria-pressed="false">virgin hero</span>
+            <span class="pill" role="button" aria-pressed="false">obsessive hero</span>
+            <span class="pill" role="button" aria-pressed="false">dominant hero</span>
+            <span class="pill" role="button" aria-pressed="false">soft dom</span>
+            <span class="pill" role="button" aria-pressed="false">jealous hero</span>
+            <span class="pill" role="button" aria-pressed="false">alpha</span>
+            <span class="pill" role="button" aria-pressed="false">protector</span>
+            <span class="pill" role="button" aria-pressed="false">switch</span>
+          </div>
+        </div>
+        <div class="pillgroup">
+          <label class="field-label">Setting &amp; flavor</label>
+          <div class="pills" data-pills="setting">
+            <span class="pill" role="button" aria-pressed="false">small town</span>
+            <span class="pill" role="button" aria-pressed="false">dark / mafia</span>
+            <span class="pill" role="button" aria-pressed="false">bratva</span>
+            <span class="pill" role="button" aria-pressed="false">monster / paranormal</span>
+            <span class="pill" role="button" aria-pressed="false">shifter / werewolf</span>
+            <span class="pill" role="button" aria-pressed="false">vampire</span>
+            <span class="pill" role="button" aria-pressed="false">fae / romantasy</span>
+            <span class="pill" role="button" aria-pressed="false">omegaverse</span>
+            <span class="pill" role="button" aria-pressed="false">hockey / sports</span>
+            <span class="pill" role="button" aria-pressed="false">motorcycle club</span>
+            <span class="pill" role="button" aria-pressed="false">cowboy / western</span>
+            <span class="pill" role="button" aria-pressed="false">billionaire</span>
+            <span class="pill" role="button" aria-pressed="false">college / NA</span>
+            <span class="pill" role="button" aria-pressed="false">historical</span>
+            <span class="pill" role="button" aria-pressed="false">sci-fi / alien</span>
+            <span class="pill" role="button" aria-pressed="false">contemporary</span>
+          </div>
+        </div>
+        <div class="pillgroup">
+          <label class="field-label">Heat &amp; kink</label>
+          <div class="pills" data-pills="kink">
+            <span class="pill" role="button" aria-pressed="false">breeding kink</span>
+            <span class="pill" role="button" aria-pressed="false">cock warming</span>
+            <span class="pill" role="button" aria-pressed="false">praise kink</span>
+            <span class="pill" role="button" aria-pressed="false">degradation</span>
+            <span class="pill" role="button" aria-pressed="false">size difference</span>
+            <span class="pill" role="button" aria-pressed="false">knotting</span>
+            <span class="pill" role="button" aria-pressed="false">heat / rut cycle</span>
+            <span class="pill" role="button" aria-pressed="false">marking / biting</span>
+            <span class="pill" role="button" aria-pressed="false">primal play</span>
+            <span class="pill" role="button" aria-pressed="false">dirty talk</span>
+            <span class="pill" role="button" aria-pressed="false">dubcon</span>
+            <span class="pill" role="button" aria-pressed="false">CNC</span>
+            <span class="pill" role="button" aria-pressed="false">sharing / MFM</span>
+            <span class="pill" role="button" aria-pressed="false">first time</span>
+            <span class="pill" role="button" aria-pressed="false">exhibitionism</span>
+            <span class="pill" role="button" aria-pressed="false">edging</span>
+          </div>
+          <div class="addrow"><input type="text" class="add-input" data-addto="kink" placeholder="add any kink or trope…" /><button class="add-btn" data-addto="kink">Add</button></div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <div class="col">
+            <div class="spice-head"><label class="field-label" for="bSpice" style="margin:0">Spice level</label><span class="spice-val" id="bSpiceVal">3 · open door</span></div>
+            <input type="range" id="bSpice" min="1" max="5" value="3" step="1" />
+          </div>
+          <div class="col">
+            <label class="field-label">Dealbreakers &amp; must-haves</label>
+            <div class="toggles" data-toggles="build">
+              <span class="toggle" role="button" aria-pressed="false" data-v="guaranteed HEA, no exceptions">guaranteed HEA</span>
+              <span class="toggle" role="button" aria-pressed="false" data-v="absolutely no third-act breakup">no 3rd-act breakup</span>
+              <span class="toggle" role="button" aria-pressed="false" data-v="no cheating of any kind">no cheating</span>
+              <span class="toggle" role="button" aria-pressed="false" data-v="no cliffhanger, complete story">no cliffhanger</span>
+            </div>
+          </div>
+        </div>
+        <button class="go" data-run="build">Build my match</button>
+      </div>
+    </section>
+
+    <!-- NAME THAT BOOK -->
+    <section id="view-name" class="view">
+      <div class="hero"><div class="h2">Name that <span class="it">book</span></div><div class="sub">You half-remember it. I'll find it.</div></div>
+      <div class="console surface">
+        <label class="field-label" for="memory">Tell me everything you remember</label>
+        <textarea id="memory" placeholder="FMC was a baker who inherited her grandma's shop, MMC was a grumpy single-dad hockey player, only one bed at the cabin in a snowstorm. Indie, super spicy, teal cover…"></textarea>
+        <div class="chips"><span class="chip">what happened?</span><span class="chip">their jobs?</span><span class="chip">the vibe / spice?</span><span class="chip">cover or where you saw it?</span></div>
+        <button class="go" data-run="name">Find the book</button>
+      </div>
+    </section>
+
+    <!-- SERIES -->
+    <section id="view-series" class="view">
+      <div class="hero"><div class="h2">Series &amp; <span class="it">standalone</span> check</div><div class="sub">One book, a duet, or a whole series? Know first.</div></div>
+      <div class="console surface">
+        <div class="grid2">
+          <div><label class="field-label" for="sTitle">Book title</label><input type="text" id="sTitle" placeholder="the book you're eyeing" /></div>
+          <div><label class="field-label" for="sAuthor">Author (optional)</label><input type="text" id="sAuthor" placeholder="helps accuracy" /></div>
+        </div>
+        <button class="go" data-run="series" style="margin-top:20px">Check the series</button>
+      </div>
+    </section>
+
+    <!-- YOU / PRESETS -->
+    <section id="view-you" class="view">
+      <div class="hero"><div class="h2">Your <span class="it">shelf</span></div><div class="sub">The cravings you always have, saved for one-tap nights.</div></div>
+
+      <div class="section-label">Your presets</div>
+      <div class="presets" id="presetList"></div>
+
+      <div class="section-label">Create a preset</div>
+      <div class="console surface">
+        <div class="pillgroup" style="margin-bottom:18px">
+          <label class="field-label" for="presetName">Name it</label>
+          <input type="text" id="presetName" placeholder="My dark breeder fix" />
+        </div>
+        <div class="pillgroup">
+          <label class="field-label">Tropes &amp; flavor</label>
+          <div class="pills" data-pills="preset">
+            <span class="pill" role="button" aria-pressed="false">breeding kink</span>
+            <span class="pill" role="button" aria-pressed="false">cock warming</span>
+            <span class="pill" role="button" aria-pressed="false">praise kink</span>
+            <span class="pill" role="button" aria-pressed="false">size difference</span>
+            <span class="pill" role="button" aria-pressed="false">knotting</span>
+            <span class="pill" role="button" aria-pressed="false">omegaverse</span>
+            <span class="pill" role="button" aria-pressed="false">dark / mafia</span>
+            <span class="pill" role="button" aria-pressed="false">monster / paranormal</span>
+            <span class="pill" role="button" aria-pressed="false">fated mates</span>
+            <span class="pill" role="button" aria-pressed="false">possessive / feral</span>
+            <span class="pill" role="button" aria-pressed="false">morally grey MMC</span>
+            <span class="pill" role="button" aria-pressed="false">touch-her-and-die</span>
+            <span class="pill" role="button" aria-pressed="false">enemies to lovers</span>
+            <span class="pill" role="button" aria-pressed="false">grumpy × sunshine</span>
+            <span class="pill" role="button" aria-pressed="false">forced proximity</span>
+            <span class="pill" role="button" aria-pressed="false">why choose</span>
+            <span class="pill" role="button" aria-pressed="false">small town</span>
+            <span class="pill" role="button" aria-pressed="false">hockey / sports</span>
+            <span class="pill" role="button" aria-pressed="false">fae / romantasy</span>
+          </div>
+          <div class="addrow"><input type="text" class="add-input" data-addto="preset" placeholder="add any kink or trope…" /><button class="add-btn" data-addto="preset">Add</button></div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <div class="col">
+            <div class="spice-head"><label class="field-label" for="pSpice" style="margin:0">Spice level</label><span class="spice-val" id="pSpiceVal">5 · filthy throughout</span></div>
+            <input type="range" id="pSpice" min="1" max="5" value="5" step="1" />
+          </div>
+          <div class="col">
+            <label class="field-label">Dealbreakers &amp; must-haves</label>
+            <div class="toggles" data-toggles="preset">
+              <span class="toggle" role="button" aria-pressed="false" data-v="guaranteed HEA, no exceptions">guaranteed HEA</span>
+              <span class="toggle" role="button" aria-pressed="false" data-v="absolutely no third-act breakup">no 3rd-act breakup</span>
+              <span class="toggle" role="button" aria-pressed="false" data-v="no cheating of any kind">no cheating</span>
+              <span class="toggle" role="button" aria-pressed="false" data-v="no cliffhanger, complete story">no cliffhanger</span>
+            </div>
+          </div>
+        </div>
+        <button class="go" id="savePreset">Save this preset</button>
+        <div class="msg" id="presetMsg"></div>
+      </div>
+
+      <div class="section-label">Your default taste</div>
+      <div class="console surface">
+        <div class="sub" style="margin:0 0 18px; font-size:15px">Set these once and Describe &amp; Build open already tuned to you.</div>
+        <div class="row" style="margin-top:0">
+          <div class="col">
+            <div class="spice-head"><label class="field-label" for="dSpice" style="margin:0">Default spice</label><span class="spice-val" id="dSpiceVal">3 · open door</span></div>
+            <input type="range" id="dSpice" min="1" max="5" value="3" step="1" />
+          </div>
+          <div class="col">
+            <label class="field-label">Always avoid / require</label>
+            <div class="toggles" data-toggles="profile">
+              <span class="toggle" role="button" aria-pressed="false" data-v="guaranteed HEA, no exceptions">guaranteed HEA</span>
+              <span class="toggle" role="button" aria-pressed="false" data-v="absolutely no third-act breakup">no 3rd-act breakup</span>
+              <span class="toggle" role="button" aria-pressed="false" data-v="no cheating of any kind">no cheating</span>
+              <span class="toggle" role="button" aria-pressed="false" data-v="no cliffhanger, complete story">no cliffhanger</span>
+            </div>
+          </div>
+        </div>
+        <button class="go ghost" id="saveProfile">Save my defaults</button>
+        <div class="msg" id="profileMsg"></div>
+      </div>
+
+      <div class="section-label">What you've rated</div>
+      <div class="recap" id="ratingsRecap"></div>
+    </section>
+
+    <!-- SHARED RESULTS -->
+    <div id="resultsHead" class="results-head" style="display:none"></div>
+    <div id="status" class="status" style="display:none"></div>
+    <div id="results" class="results"></div>
+
+    <div class="modal" id="authModal">
+      <div class="modal-card surface">
+        <button class="modal-x" id="authClose" aria-label="close">×</button>
+        <div class="auth-tabs"><button id="tabLogin" class="auth-tab on">Sign in</button><button id="tabSignup" class="auth-tab">Create account</button></div>
+        <div class="auth-title" id="authTitle">Welcome back</div>
+        <div id="authNameRow" class="auth-field" style="display:none"><label class="field-label" for="authName">Name</label><input type="text" id="authName" placeholder="what should I call you?" /></div>
+        <div class="auth-field"><label class="field-label" for="authEmail">Email</label><input type="text" id="authEmail" placeholder="you@email.com" /></div>
+        <div class="auth-field"><label class="field-label" for="authPass">Password</label><input type="password" id="authPass" placeholder="••••••••" /></div>
+        <button class="go" id="authSubmit">Sign in</button>
+        <div class="msg" id="authMsg"></div>
+        <div class="auth-fine">Prototype sign-in for testing. Real accounts need a proper login service before launch — see the deploy note.</div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="legend">Spice — 1 closed door · 2 a little heat · 3 open door · 4 explicit · 5 throughout</div>
+      <div style="margin-top:9px">Prototype · searches the web for real, lesser-known titles and verifies series order — never inventing what it can't confirm.</div>
+    </footer>
+  </div>
+
+<script>
+  var $ = function(id){ return document.getElementById(id); };
+  var SPICE_LABELS = {1:'closed door',2:'a little heat',3:'open door',4:'explicit & frequent',5:'filthy throughout'};
+
+  function showView(name){
+    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('show'); });
+    var v = $('view-' + name); if (v) v.classList.add('show');
+    document.querySelectorAll('.navlink').forEach(function(b){ b.classList.toggle('active', b.dataset.go === name); });
+    clearResults();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  document.addEventListener('click', function(e){
+    var nav = e.target.closest('[data-go]');
+    if (nav && nav.dataset.go){ showView(nav.dataset.go); return; }
+    var t = e.target.closest('.toggle, .pill');
+    if (t){ t.setAttribute('aria-pressed', t.getAttribute('aria-pressed')==='true'?'false':'true'); }
+  });
+
+  function bindSpice(id, valId){ $(id).addEventListener('input', function(e){ $(valId).textContent = e.target.value + ' · ' + SPICE_LABELS[e.target.value]; }); }
+  bindSpice('tSpice','tSpiceVal'); bindSpice('bSpice','bSpiceVal'); bindSpice('pSpice','pSpiceVal'); bindSpice('dSpice','dSpiceVal');
+  $('exampleChips').addEventListener('click', function(e){ if (e.target.classList.contains('chip')){ $('craving').value = e.target.textContent; $('craving').focus(); } });
+
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function norm(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]/g,''); }
+  function heatMeter(n){ if(!n) return ''; var h='<div class="heat" title="spice '+n+'/5">'; for(var i=1;i<=5;i++) h+='<span class="flame '+(i<=n?'lit':'')+'"></span>'; return h+'</div>'; }
+  function getToggles(scope){ return [].map.call(document.querySelectorAll('[data-toggles="'+scope+'"] .toggle[aria-pressed="true"]'), function(t){ return t.dataset.v; }); }
+  function getPills(group){ return [].map.call(document.querySelectorAll('[data-pills="'+group+'"] .pill[aria-pressed="true"]'), function(p){ return p.textContent.trim(); }); }
+
+  var AFFILIATE_TAG = ""; // <- add your Amazon Associates tag here (e.g. "spicerack-20") to earn on Kindle clicks
+  function qy(t,a){ return encodeURIComponent(((t||'')+' '+(a||'')).trim()); }
+  function bookLinks(b){
+    var query = qy(b.title, b.author);
+    var amazon = 'https://www.amazon.com/s?k=' + query + '&i=digital-text' + (AFFILIATE_TAG ? '&tag='+AFFILIATE_TAG : '');
+    var goodreads = 'https://www.goodreads.com/search?q=' + query;
+    var storygraph = 'https://app.thestorygraph.com/browse?search_term=' + query;
+    return '<div class="links">' +
+      '<a class="lnk primary" href="'+amazon+'" target="_blank" rel="noopener">Amazon &middot; KU</a>' +
+      '<a class="lnk" href="'+goodreads+'" target="_blank" rel="noopener">Goodreads</a>' +
+      '<a class="lnk" href="'+storygraph+'" target="_blank" rel="noopener">StoryGraph</a>' +
+    '</div>';
+  }
+
+  function seriesBlock(s, currentTitle){
+    if (!s) return '';
+    var badges = '<div class="sbadges">';
+    if (s.isStandalone === true) badges += '<span class="sbadge ok">Reads as a standalone</span>';
+    else if (s.isStandalone === false) badges += '<span class="sbadge warn">Best read in order</span>';
+    else badges += '<span class="sbadge neutral">Series status unclear</span>';
+    if (s.endsOnCliffhanger === true) badges += '<span class="sbadge warn">Ends on a cliffhanger</span>';
+    if (s.position) badges += '<span class="sbadge neutral">' + escapeHtml(s.position) + '</span>';
+    badges += '</div>';
+    var verdict = s.standaloneVerdict ? '<div class="verdict">' + escapeHtml(s.standaloneVerdict) + '</div>' : '';
+    var order = '';
+    if (s.readingOrder && s.readingOrder.length){
+      var ct = norm(currentTitle);
+      order = '<div class="order"><div class="order-h">In this series' + (s.seriesName ? ' &mdash; ' + escapeHtml(s.seriesName) : '') + '</div><ol>';
+      s.readingOrder.forEach(function(t){
+        var cur = ct && (norm(t).indexOf(ct)!==-1 || ct.indexOf(norm(t))!==-1);
+        order += '<li' + (cur?' class="cur"':'') + '>' + escapeHtml(t) + '</li>';
+      });
+      order += '</ol></div>';
+    }
+    var note = s.note ? '<div class="snote">' + escapeHtml(s.note) + '</div>' : '';
+    return '<div class="series">' + badges + verdict + order + note + '</div>';
+  }
+
+  function bookCard(b, opts){
+    opts = opts || {};
+    var tropes = (b.tropes||[]).map(function(t){ return '<span class="trope">'+escapeHtml(t)+'</span>'; }).join('');
+    var conf = opts.confidence ? '<div><span class="conf '+opts.confidence+'">'+opts.confidence+' confidence</span></div>' : '';
+    var why = b.why ? '<div class="why">'+escapeHtml(b.why)+'</div>' : '';
+    return '<div class="book surface">' +
+      '<div class="book-top"><div><div class="book-title">'+escapeHtml(b.title||'Untitled')+'</div>' +
+      '<div class="book-meta">'+escapeHtml(b.author||'Unknown')+(b.year?' <span class="yr">· '+escapeHtml(String(b.year))+'</span>':'')+'</div></div>' +
+      heatMeter(b.spice?Math.max(1,Math.min(5,parseInt(b.spice))):0) + '</div>' +
+      why + conf + (tropes?'<div class="tropes">'+tropes+'</div>':'') + seriesBlock(b.series, b.title) + bookLinks(b) + ratingControl(b) + '</div>';
+  }
+
+  function clearResults(){ $('results').innerHTML=''; $('status').style.display='none'; $('resultsHead').style.display='none'; }
+  function setHead(label){ var h=$('resultsHead'); h.style.display='block'; h.innerHTML='<span class="pin">Selected for</span>'+escapeHtml(label); h.scrollIntoView({behavior:'smooth',block:'start'}); }
+  function startStatus(txt, btn){ $('results').innerHTML=''; var s=$('status'); s.style.display='block'; s.textContent=txt; if(btn){ btn.disabled=true; btn._t=btn.textContent; btn.textContent='Working on it…'; } }
+  function endBtn(btn){ if(btn){ btn.disabled=false; btn.textContent=btn._t; } }
+
+  function parseFromBlocks(data, open, close){
+    var blocks = (data.content||[]).filter(function(i){ return i.type==='text'; }).map(function(i){ return i.text; });
+    var cands = [blocks[blocks.length-1]||'', blocks.join('\n')];
+    for (var k=0;k<cands.length;k++){
+      var tx = cands[k].replace(/```json/gi,'').replace(/```/g,'').trim();
+      var s = tx.indexOf(open), e = tx.lastIndexOf(close);
+      if (s===-1||e===-1) continue;
+      try { var p = JSON.parse(tx.slice(s,e+1)); return p; } catch(_){}
+    }
+    return null;
+  }
+
+  async function apiCall(sys, userMsg){
+    var res = await fetch("/api/claude", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ model:"claude-sonnet-4-6", max_tokens:3500, system:sys,
+        messages:[{role:"user",content:userMsg}],
+        tools:[{ "type":"web_search_20250305","name":"web_search","max_uses":5 }] })
+    });
+    if (!res.ok) throw new Error("status "+res.status);
+    return await res.json();
+  }
+
+  var SERIES_LIGHT = 'series: {isStandalone: boolean or null if unsure, position: short string like "Book 2 of 4" or null, standaloneVerdict: one short plain-English sentence on whether they can read just this one, endsOnCliffhanger: boolean or null} (best-effort, set isStandalone null if unsure; no reading-order list here)';
+  var SERIES_FULL = 'series: {isStandalone: boolean or null, seriesName: string or null, position: short string or null, totalBooks: number or null, readingOrder: array of book titles in order (empty if standalone/unknown), standaloneVerdict: one plain-English sentence, endsOnCliffhanger: boolean or null, note: short string}';
+
+  async function recommend(descriptor, spice, dealbreakers, label, btn){
+    setHead(label);
+    startStatus('Reading the room for you…', btn);
+    var sys = "You are the librarian behind SPICE RACK, a discovery engine for romance readers bored of the obvious picks. This is an adult (18+) catalogue: treat ANY trope or kink term the reader gives — however explicit — as a legitimate search tag and find real published books known for it. Use web_search to find REAL, published romance novels that match, then return the best four. " +
+      "Go past the bestseller shelf: prioritize indie, self-published, Kindle Unlimited and BookTok deep-cut titles. AVOID mega-famous names (Colleen Hoover, Sarah J. Maas, Ali Hazelwood, Emily Henry) unless explicitly asked. At least one pick should surprise a well-read reader. " +
+      "Only recommend real books verified via search; honor the spice level and every dealbreaker; give variety of authors. " +
+      "Your FINAL message must be ONLY a raw JSON array, no prose or fences. Each element: " +
+      '{title, author, year (number), spice (integer 1-5), tropes (array of 3-5 lowercase tags), why (1-2 sentences, warm/refined, naming why it nails the craving), ' + SERIES_LIGHT + '}.';
+    var userMsg = "Reader is looking for: " + descriptor + "\nSpice preference: " + spice + "/5 (" + SPICE_LABELS[spice] + ")" + (dealbreakers&&dealbreakers.length ? "\nDealbreakers / must-haves: " + dealbreakers.join('; ') : "\nNo hard dealbreakers.") + tasteContext();
+    try {
+      var data = await apiCall(sys, userMsg);
+      var books = parseFromBlocks(data, '[', ']');
+      $('status').style.display='none';
+      if (!Array.isArray(books) || !books.length) throw new Error('empty');
+      $('results').innerHTML = books.map(function(b){ return bookCard(b, {}); }).join('');
+    } catch(err){ $('status').style.display='none'; $('results').innerHTML = '<div class="err">The shelf jammed — try again, or adjust what you chose.</div>'; console.error(err); }
+    finally { endBtn(btn); }
+  }
+
+  async function nameThatBook(btn){
+    var memory = $('memory').value.trim(); if (!memory){ $('memory').focus(); return; }
+    $('resultsHead').style.display='none';
+    startStatus('Searching the shelves…', btn);
+    var sys = "You are the resident book-detective for a romance reading community. Use web_search to identify the romance novel(s) the reader is fuzzily describing. Return the 1 to 3 most likely matches, best first; for each, determine its series situation via search. " +
+      "Only state facts verified via search; reflect uncertainty in confidence; NEVER invent a title, author, or reading order. If you can't find it, set found=false and suggest in note what detail would help. " +
+      "Return ONLY a raw JSON object, no prose or fences: {found: boolean, note: string, matches: [ {title, author, year, spice (1-5 or null), confidence: 'high'|'medium'|'low', why: 'one short sentence pointing to the matched details', " + SERIES_FULL + "} ]}.";
+    try {
+      var data = await apiCall(sys, "A reader is trying to remember this romance book: " + memory);
+      var obj = parseFromBlocks(data, '{', '}');
+      $('status').style.display='none';
+      if (!obj) throw new Error('parse');
+      if (!obj.found || !obj.matches || !obj.matches.length){ $('results').innerHTML = '<div class="err">'+escapeHtml(obj.note || "Couldn't pin that one down — add any detail you can: a name, the setting, the cover colour, where you saw it.")+'</div>'; return; }
+      var html = '<div class="leadin">' + (obj.matches.length>1 ? "Most likely, in order:" : "I believe this is it:") + '</div>';
+      obj.matches.forEach(function(m){ html += bookCard(m, {confidence:m.confidence}); });
+      if (obj.note) html += '<div class="snote" style="text-align:center;margin-top:14px">'+escapeHtml(obj.note)+'</div>';
+      $('results').innerHTML = html;
+    } catch(err){ $('status').style.display='none'; $('results').innerHTML = '<div class="err">The search hiccuped — try again, or add a detail or two.</div>'; console.error(err); }
+    finally { endBtn(btn); }
+  }
+
+  async function seriesCheck(btn){
+    var title = $('sTitle').value.trim(), author = $('sAuthor').value.trim(); if (!title){ $('sTitle').focus(); return; }
+    $('resultsHead').style.display='none';
+    startStatus('Checking the series…', btn);
+    var sys = "You tell a romance reader exactly what they're getting into before they start a book: true standalone, duet, or read-in-order series — and what the other books are. Use web_search to verify. " +
+      "Only state facts verified via search; if order or standalone status is unclear, say so in the verdict and set isStandalone null; NEVER invent series order. " +
+      "Return ONLY a raw JSON object, no prose or fences: {found: boolean, note: string, book: {title, author, year, spice (1-5 or null), " + SERIES_FULL + "}}.";
+    try {
+      var data = await apiCall(sys, "Tell me the series situation for the romance book \"" + title + "\"" + (author?" by "+author:"") + ".");
+      var obj = parseFromBlocks(data, '{', '}');
+      $('status').style.display='none';
+      if (!obj) throw new Error('parse');
+      if (!obj.found || !obj.book){ $('results').innerHTML = '<div class="err">'+escapeHtml(obj.note || "Couldn't find that title — try adding the author.")+'</div>'; return; }
+      $('results').innerHTML = bookCard(obj.book, {});
+    } catch(err){ $('status').style.display='none'; $('results').innerHTML = '<div class="err">The search hiccuped — try again, perhaps with the author added.</div>'; console.error(err); }
+    finally { endBtn(btn); }
+  }
+
+  // ---------- presets + profile (personal storage) ----------
+  function descriptorFromTags(tags){ return tags.length ? ('Tropes & flavor: ' + tags.join(', ')) : 'reader favourites'; }
+
+  // ---------- accounts (prototype) ----------
+  var SESSION = null;   // normalized email of signed-in user, or null
+  var ACCT = null;      // current account object {name,email,...}
+  var UDATA = { presets: [], profile: null, ratings: {} };
+  var AUTH_MODE = 'login';
+  function emailKey(e){ return 'acct:' + norm(e); }
+  function dataKey(e){ return 'udata:' + norm(e); }
+
+  async function hashPass(email, pw){
+    try {
+      var enc = new TextEncoder().encode(norm(email) + '::' + pw);
+      var buf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.prototype.map.call(new Uint8Array(buf), function(b){ return ('0'+b.toString(16)).slice(-2); }).join('');
+    } catch(_){ return 'plain:' + pw; }
+  }
+  async function getAccount(email){ try { var r = await window.storage.get(emailKey(email), true); return (r && r.value) ? JSON.parse(r.value) : null; } catch(_){ return null; } }
+  async function saveUserData(){ if (!SESSION) return; try { await window.storage.set(dataKey(SESSION), JSON.stringify(UDATA), true); } catch(_){} }
+  async function loadUserData(email){
+    try { var r = await window.storage.get(dataKey(email), true); UDATA = (r && r.value) ? JSON.parse(r.value) : { presets:[], profile:null, ratings:{} }; }
+    catch(_){ UDATA = { presets:[], profile:null, ratings:{} }; }
+    if (!UDATA.presets) UDATA.presets = []; if (!UDATA.ratings) UDATA.ratings = {};
+  }
+  function refreshUserUI(){
+    RATINGS = UDATA.ratings || {};
+    applyProfile(UDATA.profile);
+    renderPresets(UDATA.presets || []);
+    renderRatingsRecap();
+    renderAccountBar();
+  }
+  function renderAccountBar(){
+    var el = $('acctBar'); if (!el) return;
+    if (SESSION && ACCT){
+      el.innerHTML = '<span class="acct-hi">'+escapeHtml(ACCT.name)+'</span><button class="acct-btn" id="logoutBtn">Sign out</button>';
+      $('logoutBtn').addEventListener('click', doLogout);
+    } else {
+      el.innerHTML = '<button class="acct-btn primary" id="signinBtn">Sign in</button>';
+      $('signinBtn').addEventListener('click', function(){ openAuth('login'); });
+    }
+  }
+  async function doSignup(name, email, pw){
+    if (!name || !email || !pw) return 'Fill in name, email and password.';
+    if (pw.length < 4) return 'Use a password of at least 4 characters.';
+    if (await getAccount(email)) return 'An account with that email already exists — try signing in.';
+    ACCT = { name: name, email: norm(email), passHash: await hashPass(email, pw), createdAt: Date.now() };
+    try { await window.storage.set(emailKey(email), JSON.stringify(ACCT), true); } catch(_){ return 'Could not create the account right now.'; }
+    SESSION = norm(email); UDATA = { presets:[], profile:null, ratings:{} };
+    await saveUserData();
+    try { await window.storage.set('session', SESSION, false); } catch(_){}
+    refreshUserUI(); closeAuth(); return null;
+  }
+  async function doLogin(email, pw){
+    var acct = await getAccount(email);
+    if (!acct) return 'No account with that email — create one instead?';
+    if ((await hashPass(email, pw)) !== acct.passHash) return 'That password does not match.';
+    ACCT = acct; SESSION = norm(email);
+    await loadUserData(SESSION);
+    try { await window.storage.set('session', SESSION, false); } catch(_){}
+    refreshUserUI(); closeAuth(); return null;
+  }
+  async function doLogout(){
+    SESSION = null; ACCT = null; UDATA = { presets:[], profile:null, ratings:{} }; RATINGS = {};
+    try { await window.storage.delete('session', false); } catch(_){}
+    renderPresets([]); applyProfile(null); renderRatingsRecap(); renderAccountBar();
+  }
+  function requireLogin(){ if (SESSION) return true; openAuth('signup'); $('authMsg').textContent = 'Create a free account so I can remember this for you.'; return false; }
+
+  function openAuth(mode){ AUTH_MODE = mode||'login'; setAuthMode(AUTH_MODE); $('authMsg').textContent=''; $('authModal').classList.add('show'); }
+  function closeAuth(){ $('authModal').classList.remove('show'); }
+  function setAuthMode(mode){
+    AUTH_MODE = mode;
+    $('authTitle').textContent = mode==='signup' ? 'Create your account' : 'Welcome back';
+    $('authNameRow').style.display = mode==='signup' ? 'block' : 'none';
+    $('authSubmit').textContent = mode==='signup' ? 'Create account' : 'Sign in';
+    $('tabLogin').classList.toggle('on', mode==='login');
+    $('tabSignup').classList.toggle('on', mode==='signup');
+  }
+  $('tabLogin').addEventListener('click', function(){ setAuthMode('login'); });
+  $('tabSignup').addEventListener('click', function(){ setAuthMode('signup'); });
+  $('authClose').addEventListener('click', closeAuth);
+  $('authModal').addEventListener('click', function(e){ if (e.target.id === 'authModal') closeAuth(); });
+  $('authSubmit').addEventListener('click', async function(){
+    var email = $('authEmail').value.trim(), pw = $('authPass').value, name = $('authName').value.trim();
+    $('authSubmit').disabled = true;
+    var err = AUTH_MODE==='signup' ? await doSignup(name, email, pw) : await doLogin(email, pw);
+    $('authSubmit').disabled = false;
+    if (err) $('authMsg').textContent = err;
+  });
+
+  // preset + profile storage now ride on the signed-in user's data
+  async function loadPresets(){ return UDATA.presets || []; }
+  async function storePresets(arr){ UDATA.presets = arr; await saveUserData(); }
+  async function loadProfile(){ return UDATA.profile; }
+  async function storeProfile(p){ UDATA.profile = p; await saveUserData(); }
+
+  function renderPresets(list){
+    var wrap = $('presetList');
+    if (!list.length){ wrap.innerHTML = '<div class="empty">No presets yet — build your go-to craving below and it lands here, one tap away.</div>'; return; }
+    wrap.innerHTML = '';
+    list.forEach(function(p, idx){
+      var sum = [].concat(p.tags||[]).slice(0,4).join(' · ') + ' · ' + p.spice + '/5';
+      var el = document.createElement('div'); el.className = 'preset surface';
+      el.innerHTML = '<div><div class="preset-name">'+escapeHtml(p.name)+'</div><div class="preset-sum">'+escapeHtml(sum)+'</div></div>' +
+        '<div style="display:flex;align-items:center;gap:6px"><span class="preset-run">Run</span><button class="preset-x" data-x="'+idx+'" title="remove">×</button></div>';
+      el.addEventListener('click', function(ev){
+        if (ev.target.closest('.preset-x')) return;
+        recommend(descriptorFromTags(p.tags||[]), p.spice, p.dealbreakers||[], p.name, null);
+      });
+      wrap.appendChild(el);
+    });
+    wrap.querySelectorAll('.preset-x').forEach(function(b){
+      b.addEventListener('click', async function(ev){
+        ev.stopPropagation();
+        var i = parseInt(b.dataset.x);
+        var list2 = await loadPresets(); list2.splice(i,1); await storePresets(list2); renderPresets(list2);
+      });
+    });
+  }
+
+  $('savePreset').addEventListener('click', async function(){
+    if (!requireLogin()) return;
+    var name = $('presetName').value.trim();
+    var tags = getPills('preset');
+    var msg = $('presetMsg');
+    if (!name){ msg.textContent = 'Give your preset a name first.'; $('presetName').focus(); return; }
+    if (!tags.length){ msg.textContent = 'Pick at least one trope or flavour.'; return; }
+    var preset = { name: name, tags: tags, spice: parseInt($('pSpice').value)||3, dealbreakers: getToggles('preset') };
+    var list = await loadPresets(); list.unshift(preset); await storePresets(list);
+    renderPresets(list);
+    $('presetName').value=''; 
+    document.querySelectorAll('[data-pills="preset"] .pill[aria-pressed="true"], [data-toggles="preset"] .toggle[aria-pressed="true"]').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
+    msg.textContent = '“' + name + '” saved — now at the top of your presets.';
+  });
+
+  function applyProfile(p){
+    if (!p) return;
+    if (p.spice){ ['tSpice','bSpice'].forEach(function(id){ $(id).value = p.spice; $(id==='tSpice'?'tSpiceVal':'bSpiceVal').textContent = p.spice + ' · ' + SPICE_LABELS[p.spice]; }); $('dSpice').value=p.spice; $('dSpiceVal').textContent=p.spice+' · '+SPICE_LABELS[p.spice]; }
+    var dbs = p.dealbreakers||[];
+    ['tell','build','profile'].forEach(function(scope){
+      document.querySelectorAll('[data-toggles="'+scope+'"] .toggle').forEach(function(t){ t.setAttribute('aria-pressed', dbs.indexOf(t.dataset.v)!==-1 ? 'true':'false'); });
+    });
+  }
+
+  $('saveProfile').addEventListener('click', async function(){
+    if (!requireLogin()) return;
+    var p = { spice: parseInt($('dSpice').value)||3, dealbreakers: getToggles('profile') };
+    await storeProfile(p); applyProfile(p);
+    $('profileMsg').textContent = 'Saved — Describe & Build will open tuned to you.';
+  });
+
+  document.querySelectorAll('.go[data-run]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var r = btn.dataset.run;
+      if (r === 'describe'){
+        var craving = $('craving').value.trim(); if (!craving){ $('craving').focus(); return; }
+        recommend(craving, $('tSpice').value, getToggles('tell'), craving.length>60?craving.slice(0,57)+'…':craving, btn);
+      } else if (r === 'build'){
+        var tr=getPills('trope'), ch=getPills('char'), st=getPills('setting'), kk=getPills('kink');
+        if (!tr.length && !ch.length && !st.length && !kk.length){ alert('Choose at least one ingredient to build from.'); return; }
+        var parts=[]; if(tr.length)parts.push('Tropes: '+tr.join(', ')); if(ch.length)parts.push('Characters/dynamics: '+ch.join(', ')); if(st.length)parts.push('Setting/flavor: '+st.join(', ')); if(kk.length)parts.push('Heat/kink: '+kk.join(', '));
+        var label=[].concat(kk,st,tr,ch).slice(0,3).join(' · ');
+        recommend(parts.join('. '), $('bSpice').value, getToggles('build'), label, btn);
+      } else if (r === 'name'){ nameThatBook(btn); }
+      else if (r === 'series'){ seriesCheck(btn); }
+    });
+  });
+
+  $('catGrid').addEventListener('click', function(e){
+    var cat = e.target.closest('.cat'); if (!cat) return;
+    recommend(cat.dataset.q, cat.dataset.spice || '4', [], cat.querySelector('.cat-name').textContent, null);
+  });
+
+  $('craving').addEventListener('keydown', function(e){ if ((e.metaKey||e.ctrlKey)&&e.key==='Enter') document.querySelector('[data-run="describe"]').click(); });
+  $('memory').addEventListener('keydown', function(e){ if ((e.metaKey||e.ctrlKey)&&e.key==='Enter') nameThatBook(document.querySelector('[data-run="name"]')); });
+  $('sTitle').addEventListener('keydown', function(e){ if (e.key==='Enter') seriesCheck(document.querySelector('[data-run="series"]')); });
+
+  // ---------- ratings (personal storage) ----------
+  var RATINGS = {};
+  var REASONS = ['the spice','the tropes','the characters','the ending','the pacing','the writing'];
+  async function loadRatings(){ RATINGS = UDATA.ratings || {}; }
+  async function persistRatings(){ UDATA.ratings = RATINGS; await saveUserData(); }
+  function bookId(b){ return norm(b.title) + '~' + norm(b.author); }
+
+  function ratingInner(id){
+    var r = RATINGS[id] || {};
+    var rx = '<div class="rx-row">' +
+      '<button class="rx'+(r.reaction==='love'?' on love':'')+'" data-rx="love">Loved it</button>' +
+      '<button class="rx'+(r.reaction==='fine'?' on fine':'')+'" data-rx="fine">It was fine</button>' +
+      '<button class="rx'+(r.reaction==='nope'?' on nope':'')+'" data-rx="nope">Not for me</button>' +
+    '</div>';
+    var rz = '';
+    if (r.reaction){
+      var tip = r.reaction==='nope' ? 'what put you off?' : 'what worked?';
+      rz = '<div class="rz-row"><span class="rztip">'+tip+'</span>' +
+        REASONS.map(function(z){ var on=(r.reasons||[]).indexOf(z)!==-1; return '<button class="rz'+(on?' on':'')+'" data-rz="'+z+'">'+z+'</button>'; }).join('') +
+      '</div>';
+    }
+    return '<span class="rlabel">How was it?</span>' + rx + rz;
+  }
+  function ratingControl(b){
+    var id = bookId(b);
+    return '<div class="rating" data-id="'+id+'" data-t="'+escapeHtml(b.title||'')+'" data-a="'+escapeHtml(b.author||'')+'">' + ratingInner(id) + '</div>';
+  }
+
+  document.addEventListener('click', function(e){
+    var rxBtn = e.target.closest('.rx');
+    if (rxBtn){
+      if (!requireLogin()) return;
+      var box = rxBtn.closest('.rating'); var id = box.dataset.id;
+      var r = RATINGS[id] || { title: box.dataset.t, author: box.dataset.a, reasons: [] };
+      r.reaction = rxBtn.dataset.rx; r.at = Date.now(); RATINGS[id] = r; persistRatings();
+      box.innerHTML = ratingInner(id);
+      renderRatingsRecap();
+      return;
+    }
+    var rzBtn = e.target.closest('.rz');
+    if (rzBtn){
+      var box2 = rzBtn.closest('.rating'); var id2 = box2.dataset.id;
+      var r2 = RATINGS[id2] || { title: box2.dataset.t, author: box2.dataset.a, reasons: [] };
+      r2.reasons = r2.reasons || [];
+      var z = rzBtn.dataset.rz; var i = r2.reasons.indexOf(z);
+      if (i===-1) r2.reasons.push(z); else r2.reasons.splice(i,1);
+      RATINGS[id2] = r2; persistRatings();
+      rzBtn.classList.toggle('on');
+      return;
+    }
+  });
+
+  function ratedList(reaction){ return Object.keys(RATINGS).map(function(k){ return RATINGS[k]; }).filter(function(r){ return r.reaction===reaction; }).sort(function(a,b){ return (b.at||0)-(a.at||0); }); }
+  function tasteContext(){
+    var loved = ratedList('love'), nope = ratedList('nope');
+    if (!loved.length && !nope.length) return '';
+    var s = '';
+    if (loved.length) s += "\nThe reader has LOVED these before — lean toward this taste: " + loved.slice(0,8).map(function(r){ return r.title + (r.author?' by '+r.author:''); }).join('; ') + '.';
+    if (nope.length) s += "\nThe reader did NOT like these — avoid them and close misses: " + nope.slice(0,8).map(function(r){ return r.title; }).join('; ') + '.';
+    if (loved.length || nope.length) s += "\nDo not re-recommend any title already in those lists; keep the picks fresh.";
+    return s;
+  }
+  function renderRatingsRecap(){
+    var wrap = $('ratingsRecap'); if (!wrap) return;
+    function col(title, cls, arr){
+      var items = arr.length ? arr.slice(0,12).map(function(r){ return '<div class="recap-item">'+escapeHtml(r.title)+(r.author?' <span>· '+escapeHtml(r.author)+'</span>':'')+'</div>'; }).join('')
+        : '<div class="recap-empty">Nothing yet — rate a book and it lands here.</div>';
+      return '<div class="recap-col surface"><div class="recap-h '+cls+'">'+title+'</div>'+items+'</div>';
+    }
+    wrap.innerHTML = col('Loved', 'love', ratedList('love')) + col('Not for me', 'nope', ratedList('nope'));
+  }
+
+  // ---------- custom trope add ----------
+  function addCustomPill(group, value){
+    value = (value||'').trim(); if (!value) return;
+    var container = document.querySelector('[data-pills="'+group+'"]'); if (!container) return;
+    var match = null;
+    [].forEach.call(container.querySelectorAll('.pill'), function(p){ if (p.textContent.trim().toLowerCase() === value.toLowerCase()) match = p; });
+    if (match){ match.setAttribute('aria-pressed','true'); return; }
+    var span = document.createElement('span');
+    span.className = 'pill'; span.setAttribute('role','button'); span.setAttribute('aria-pressed','true'); span.textContent = value;
+    container.appendChild(span);
+  }
+  document.addEventListener('click', function(e){
+    var add = e.target.closest('.add-btn'); if (!add) return;
+    var input = add.parentElement.querySelector('.add-input');
+    addCustomPill(add.dataset.addto, input.value); input.value = ''; input.focus();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('add-input')){
+      e.preventDefault(); addCustomPill(e.target.dataset.addto, e.target.value); e.target.value = '';
+    }
+  });
+
+  // init
+  (async function(){
+    renderAccountBar();
+    var saved = null;
+    try { var r = await window.storage.get('session', false); saved = (r && r.value) ? r.value : null; } catch(_){}
+    if (saved){
+      var acct = await getAccount(saved);
+      if (acct){ SESSION = norm(saved); ACCT = acct; await loadUserData(SESSION); }
+    }
+    refreshUserUI();
+  })();
+</script>
+</body>
+</html>
